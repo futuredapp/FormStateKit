@@ -1,7 +1,7 @@
 public struct FormState<Form> {
     public var form: Form
-    public let validations: [FormValidation<Form>]
-    public var isValidating: Bool = false
+    private let validations: [FormValidation<Form>]
+    private var errors: [AnyHashable: [String]] = [:]
 
     public init(form: Form, validations: [FormValidation<Form>]) {
         self.form = form
@@ -13,20 +13,32 @@ public struct FormState<Form> {
         self.validations = validations
     }
 
-    public mutating func validate() -> Bool {
-        isValidating = true
-        return validations.allSatisfy { validation in
-            validation.validate(form)
-        }
+    public var allErrors: [String] {
+        errors.flatMap(\.value)
     }
 
-    public func errors<Field>(for field: KeyPath<Form, Field>) -> [String] {
-        guard isValidating else {
-            return []
-        }
-        return validations
+    @discardableResult
+    public mutating func validate() -> Bool {
+        let errors = validations
+            .filter { !$0.validate(form) }
+            .reduce(into: [:]) { result, validation in
+                result[validation.field, default: []].append(validation.description)
+            }
+        self.errors = errors
+        return errors.isEmpty
+    }
+
+    @discardableResult
+    public mutating func validate<Field>(field: KeyPath<Form, Field>) -> Bool {
+        let fieldErrors = validations
             .filter { $0.field == AnyHashable(field) && !$0.validate(form) }
             .map(\.description)
             .reduce(into: []) { $0.append($1) }
+        errors[AnyHashable(field)] = fieldErrors
+        return fieldErrors.isEmpty
+    }
+
+    public func errors<Field>(for field: KeyPath<Form, Field>) -> [String] {
+        errors[AnyHashable(field)] ?? []
     }
 }
