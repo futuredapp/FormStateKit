@@ -36,4 +36,12 @@ public struct FormState<Form> {
     public func errors<Field>(for field: KeyPath<Form, Field>) -> [String] {
         errors[AnyHashable(field)] ?? []
     }
+
+    public mutating func clearErrors<Field>(for field: KeyPath<Form, Field>) {
+        errors.removeValue(forKey: AnyHashable(field))
+    }
+
+    public mutating func clearErrors() {
+        errors.removeAll()
+    }
 }
