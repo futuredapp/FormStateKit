@@ -8,11 +8,6 @@ public struct FormState<Form> {
         self.validations = validations
     }
 
-    public init(emptyForm: Form, validations: [FormValidation<Form>]) {
-        self.form = emptyForm
-        self.validations = validations
-    }
-
     public var allErrors: [String] {
         errors.flatMap(\.value)
     }
