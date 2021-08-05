@@ -1,5 +1,5 @@
 public struct FormValidation<Form> {
-    public let field: AnyHashable
+    let field: AnyHashable
     public let description: String
     let validate: (Form) -> Bool
 
