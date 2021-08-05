@@ -1,19 +1,19 @@
 public struct FormValidation<Form> {
     public let field: AnyHashable
     public let description: String
-    let validate: (Form?, Form) -> Bool
+    let validate: (Form) -> Bool
 
-    public init<R>(field: KeyPath<Form, R>, description: String, validate: @escaping (Form) -> Bool) {
+    public init<Value>(for field: KeyPath<Form, Value>, description: String, validateValue: @escaping (Value) -> Bool) {
         self.field = AnyHashable(field)
         self.description = description
-        self.validate = { _, model in
-            validate(model)
+        self.validate = { form in
+            validateValue(form[keyPath: field])
         }
     }
 
-    public init<R>(field: KeyPath<Form, R>, description: String, validate: @escaping (Form?, Form) -> Bool) {
+    public init<R>(for field: KeyPath<Form, R>, description: String, validateForm: @escaping (Form) -> Bool) {
         self.field = AnyHashable(field)
         self.description = description
-        self.validate = validate
+        self.validate = validateForm
     }
 }
