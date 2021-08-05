@@ -6,4 +6,5 @@ A description of this package.
 
 - [ ] Focus
 - [ ] Autovalidation?
+- [ ] Async validation  
 - [ ] Form with dynamically prefilled values
