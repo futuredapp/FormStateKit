@@ -10,4 +10,22 @@ public struct FormValidationRule<Value> {
     public func callAsFunction(value: Value) -> Bool {
         validate(value)
     }
+
+    static public func && (_ lhs: Self, _ rhs: Self) -> Self {
+        Self.init { value in
+            lhs.validate(value) && rhs.validate(value)
+        }
+    }
+
+    static public func || (_ lhs: Self, _ rhs: Self) -> Self {
+        Self.init { value in
+            lhs.validate(value) || rhs.validate(value)
+        }
+    }
+
+    static public prefix func !(_ rule: Self) -> Self {
+        Self.init { value in
+            !rule.validate(value)
+        }
+    }
 }
