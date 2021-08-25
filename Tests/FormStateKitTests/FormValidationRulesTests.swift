@@ -61,4 +61,27 @@ final class FormValidationRulesTests: XCTestCase {
         let rule = FormValidationRule<Date?>.required
         XCTAssertFalse(rule(value: nil))
     }
+
+    func testValidAddresses() {
+        let rule = FormValidationRule.email
+        XCTAssertTrue(rule(value: "email@example.com"))
+        XCTAssertTrue(rule(value: "firstname.lastname@example.com"))
+        XCTAssertTrue(rule(value: "email+service@example.com"))
+        XCTAssertTrue(rule(value: "email@example.co.jp"))
+        XCTAssertTrue(rule(value: "_______@example.com"))
+        XCTAssertTrue(rule(value: "email@example.museum"))
+        XCTAssertTrue(rule(value: "1234567890@example.com"))
+    }
+
+    func testInvalidAddresses() {
+        let rule = FormValidationRule.email
+        XCTAssertFalse(rule(value: "plainaddress"))
+        XCTAssertFalse(rule(value: "#@%^%#$@#$@#.com"))
+        XCTAssertFalse(rule(value: "@example.com"))
+        XCTAssertFalse(rule(value: "Joe Smith <email@example.com>"))
+        XCTAssertFalse(rule(value: "email.example.com"))
+        XCTAssertFalse(rule(value: "email@example@example.com"))
+        XCTAssertFalse(rule(value: "email@example.com (Joe Smith)"))
+        XCTAssertFalse(rule(value: "email@example"))
+    }
 }
