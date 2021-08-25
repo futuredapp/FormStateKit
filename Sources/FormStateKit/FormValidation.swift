@@ -16,4 +16,12 @@ public struct FormValidation<Form> {
         self.description = description
         self.validate = validateForm
     }
+
+    public init<Value>(for field: KeyPath<Form, Value>, description: String, rule: FormValidationRule<Value>) {
+        self.field = AnyHashable(field)
+        self.description = description
+        self.validate = { form in
+            rule(value: form[keyPath: field])
+        }
+    }
 }
