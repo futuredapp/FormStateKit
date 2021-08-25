@@ -62,6 +62,46 @@ final class FormValidationRulesTests: XCTestCase {
         XCTAssertFalse(rule(value: nil))
     }
 
+    func testEmptyOnSomeString() {
+        let rule = FormValidationRule<String>.empty
+        XCTAssertFalse(rule(value: "someString"))
+    }
+
+    func testEmptyOnEmptyString() {
+        let rule = FormValidationRule<String>.empty
+        XCTAssertTrue(rule(value: ""))
+    }
+
+    func testEmptyOnArrayContainingElements() {
+        let rule = FormValidationRule<[Int]>.empty
+        XCTAssertFalse(rule(value: [0, 1]))
+    }
+
+    func testEmptyOnEmptyArray() {
+        let rule = FormValidationRule<[Int]>.empty
+        XCTAssertTrue(rule(value: []))
+    }
+
+    func testEmptyOnSetContainingElements() {
+        let rule = FormValidationRule<Set<Int>>.empty
+        XCTAssertFalse(rule(value: [0, 1]))
+    }
+
+    func testEmptyOnEmptySet() {
+        let rule = FormValidationRule<Set<Int>>.empty
+        XCTAssertTrue(rule(value: []))
+    }
+
+    func testEmptyOnSomeDate() {
+        let rule = FormValidationRule<Date?>.empty
+        XCTAssertFalse(rule(value: Date()))
+    }
+
+    func testEmptyOnNilDate() {
+        let rule = FormValidationRule<Date?>.empty
+        XCTAssertTrue(rule(value: nil))
+    }
+
     func testValidAddresses() {
         let rule = FormValidationRule.email
         XCTAssertTrue(rule(value: "email@example.com"))

@@ -2,4 +2,8 @@ public extension FormValidationRule where Value: ExpressibleByNilLiteral & Equat
     static var required: Self {
         Self.init { $0 != Value.init(nilLiteral: ()) }
     }
+
+    static var empty: Self {
+        Self.init { $0 == Value.init(nilLiteral: ()) }
+    }
 }
