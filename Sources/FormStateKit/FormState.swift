@@ -2,7 +2,7 @@
 public struct FormState<Form> {
     public var form: Form
     private let validations: [FormValidation<Form>]
-    private var errors: [AnyKeyPath: [String]] = [:]
+    private var errors: [PartialKeyPath<Form>: [String]] = [:]
 
     public init(form: Form, validations: [FormValidation<Form>]) {
         self.form = form

@@ -1,5 +1,5 @@
 public struct FormValidation<Form> {
-    let field: AnyKeyPath
+    let field: PartialKeyPath<Form>
     public let description: String
     let validate: (Form) -> Bool
 
