@@ -2,7 +2,7 @@
 public struct FormState<Form> {
     public var form: Form
     private let validations: [FormValidation<Form>]
-    private var errors: [AnyHashable: [String]] = [:]
+    private var errors: [AnyKeyPath: [String]] = [:]
 
     public init(form: Form, validations: [FormValidation<Form>]) {
         self.form = form
@@ -41,19 +41,19 @@ public struct FormState<Form> {
     @discardableResult
     public mutating func validate<Field>(field: KeyPath<Form, Field>) -> Bool {
         let fieldErrors = validations
-            .filter { $0.field == AnyHashable(field) && !$0.validate(form) }
+            .filter { $0.field == field && !$0.validate(form) }
             .map(\.description)
             .reduce(into: []) { $0.append($1) }
-        errors[AnyHashable(field)] = fieldErrors
+        errors[field] = fieldErrors
         return fieldErrors.isEmpty
     }
 
     public func errors<Field>(for field: KeyPath<Form, Field>) -> [String] {
-        errors[AnyHashable(field), default: []]
+        errors[field, default: []]
     }
 
     public mutating func clearErrors<Field>(for field: KeyPath<Form, Field>) {
-        errors.removeValue(forKey: AnyHashable(field))
+        errors.removeValue(forKey: field)
     }
 
     public mutating func clearErrors() {
