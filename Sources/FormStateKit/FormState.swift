@@ -1,3 +1,4 @@
+@propertyWrapper
 public struct FormState<Form> {
     public var form: Form
     private let validations: [FormValidation<Form>]
@@ -6,6 +7,20 @@ public struct FormState<Form> {
     public init(form: Form, validations: [FormValidation<Form>]) {
         self.form = form
         self.validations = validations
+    }
+
+    public init(wrappedValue: Form, validations: [FormValidation<Form>]) {
+        self.form = wrappedValue
+        self.validations = validations
+    }
+
+    public var wrappedValue: Form {
+        get {
+            form
+        }
+        set {
+            form = newValue
+        }
     }
 
     public var allErrors: [String] {
