@@ -2,16 +2,25 @@
 public struct FormState<Form> {
     public var form: Form
     private let validations: [FormValidation<Form>]
+    private let fieldOrder: [PartialKeyPath<Form>]
     private var errors: [PartialKeyPath<Form>: [String]] = [:]
 
-    public init(form: Form, validations: [FormValidation<Form>]) {
+    public init(form: Form, validations: [FormValidation<Form>], fieldOrder: [PartialKeyPath<Form>] = []) {
         self.form = form
         self.validations = validations
+        self.fieldOrder = fieldOrder
     }
 
-    public init(wrappedValue: Form, validations: [FormValidation<Form>]) {
+    public init(wrappedValue: Form, validations: [FormValidation<Form>], fieldOrder: [PartialKeyPath<Form>] = []) {
         self.form = wrappedValue
         self.validations = validations
+        self.fieldOrder = fieldOrder
+    }
+
+    public init(wrappedValue: Form) where Form: FormModel {
+        self.form = wrappedValue
+        self.validations = wrappedValue.validations
+        self.fieldOrder = wrappedValue.fieldOrder
     }
 
     public var wrappedValue: Form {
@@ -58,5 +67,21 @@ public struct FormState<Form> {
 
     public mutating func clearErrors() {
         errors.removeAll()
+    }
+
+    @discardableResult
+    public mutating func submit<Field>(field: KeyPath<Form, Field>) -> PartialKeyPath<Form>? {
+        guard validate(field: field) else {
+            return field
+        }
+        return nextField(after: field)
+    }
+
+    public mutating func submit<Field>(field: KeyPath<Form, Field>, updating focus: inout PartialKeyPath<Form>?) {
+        focus = submit(field: field)
+    }
+
+    public func nextField(after field: PartialKeyPath<Form>) -> PartialKeyPath<Form>? {
+        fieldOrder.drop { $0 != field }.dropFirst().first
     }
 }
