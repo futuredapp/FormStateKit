@@ -1,6 +1,6 @@
-@propertyWrapper
 public struct FormState<Form> {
     public var form: Form
+
     private let validations: [FormValidation<Form>]
     private let fieldOrder: [PartialKeyPath<Form>]
     private var errors: [PartialKeyPath<Form>: [String]] = [:]
@@ -11,25 +11,10 @@ public struct FormState<Form> {
         self.fieldOrder = fieldOrder
     }
 
-    public init(wrappedValue: Form, validations: [FormValidation<Form>], fieldOrder: [PartialKeyPath<Form>] = []) {
-        self.form = wrappedValue
-        self.validations = validations
-        self.fieldOrder = fieldOrder
-    }
-
-    public init(wrappedValue: Form) where Form: FormModel {
-        self.form = wrappedValue
-        self.validations = wrappedValue.validations
-        self.fieldOrder = wrappedValue.fieldOrder
-    }
-
-    public var wrappedValue: Form {
-        get {
-            form
-        }
-        set {
-            form = newValue
-        }
+    public init(form: Form) where Form: FormModel {
+        self.form = form
+        self.validations = form.validations
+        self.fieldOrder = form.fieldOrder
     }
 
     public var allErrors: [String] {
