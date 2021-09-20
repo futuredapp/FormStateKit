@@ -5,14 +5,16 @@ import PackageDescription
 let package = Package(
     name: "FormStateKit",
     products: [
-        .library(name: "FormStateKit", targets: ["FormStateKit"]),
+        .library(name: "FormStateKit", targets: ["FormStateKit"])
     ],
     targets: [
         .target(
             name: "FormStateKit",
-            dependencies: []),
+            dependencies: []
+        ),
         .testTarget(
             name: "FormStateKitTests",
-            dependencies: ["FormStateKit"]),
+            dependencies: ["FormStateKit"]
+        )
     ]
 )
