@@ -70,14 +70,9 @@ struct SignupView: View {
                     .onSubmit {
                         state.submit(field: \.name, updating: &focus)
                     }
-                FormErrorView(errors: state.errors(for: \.name))
-
-                TextField("Email", text: $state.form.email)
-                    .focused($focus, equals: \.email)
-                    .onSubmit {
-                        state.submit(field: \.email, updating: &focus)
-                    }
-                FormErrorView(errors: state.errors(for: \.name))
+                ForEach(errors, id: \.self, content: Text.init)
+                    .font(.footnote)
+                    .foregroundColor(.red)
             }
 
             ...
@@ -88,7 +83,6 @@ struct SignupView: View {
                 }
             }
         }
-        .submitLabel(.next)
     }
 
     private func submit() {
