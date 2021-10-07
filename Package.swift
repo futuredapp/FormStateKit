@@ -9,13 +9,7 @@ let package = Package(
         .library(name: "FormStateKit", targets: ["FormStateKit"])
     ],
     targets: [
-        .target(
-            name: "FormStateKit",
-            dependencies: []
-        ),
-        .testTarget(
-            name: "FormStateKitTests",
-            dependencies: ["FormStateKit"]
-        )
+        .target(name: "FormStateKit"),
+        .testTarget(name: "FormStateKitTests", dependencies: ["FormStateKit"])
     ]
 )
