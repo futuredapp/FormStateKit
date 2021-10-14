@@ -71,4 +71,8 @@ public struct FormState<Form> {
     public func nextField(after field: FocusedField) -> FocusedField? {
         fieldOrder.drop { $0 != field }.dropFirst().first
     }
+
+    public func prefilled(form: Form? = nil) -> PrefilledForm<Form> {
+        PrefilledForm(form: form)
+    }
 }
