@@ -3,7 +3,7 @@ import SwiftUI
 public struct PrefilledForm<Form> {
     let form: Form?
 
-    public init(form: Form?) {
+    public init(form: Form? = nil) {
         self.form = form
     }
 
