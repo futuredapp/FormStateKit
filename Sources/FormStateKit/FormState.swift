@@ -1,11 +1,13 @@
 public struct FormState<Form> {
+    public typealias FocusedField = PartialKeyPath<Form>
+
     public var form: Form
 
     private let validations: [FormValidation<Form>]
-    private let fieldOrder: [PartialKeyPath<Form>]
-    private var errors: [PartialKeyPath<Form>: [String]] = [:]
+    private let fieldOrder: [FocusedField]
+    private var errors: [FocusedField: [String]] = [:]
 
-    public init(form: Form, validations: [FormValidation<Form>], fieldOrder: [PartialKeyPath<Form>] = []) {
+    public init(form: Form, validations: [FormValidation<Form>], fieldOrder: [FocusedField] = []) {
         self.form = form
         self.validations = validations
         self.fieldOrder = fieldOrder
@@ -55,18 +57,18 @@ public struct FormState<Form> {
     }
 
     @discardableResult
-    public mutating func submit<Field>(field: KeyPath<Form, Field>) -> PartialKeyPath<Form>? {
+    public mutating func submit<Field>(field: KeyPath<Form, Field>) -> FocusedField? {
         guard validate(field: field) else {
             return field
         }
         return nextField(after: field)
     }
 
-    public mutating func submit<Field>(field: KeyPath<Form, Field>, updating focus: inout PartialKeyPath<Form>?) {
+    public mutating func submit<Field>(field: KeyPath<Form, Field>, updating focus: inout FocusedField?) {
         focus = submit(field: field)
     }
 
-    public func nextField(after field: PartialKeyPath<Form>) -> PartialKeyPath<Form>? {
+    public func nextField(after field: FocusedField) -> FocusedField? {
         fieldOrder.drop { $0 != field }.dropFirst().first
     }
 }
