@@ -1,6 +1,6 @@
 import SwiftUI
 
-public struct FormPrefill<Form> {
+public struct PrefilledForm<Form> {
     let form: Form?
 
     public init(form: Form?) {
