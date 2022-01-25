@@ -5,7 +5,7 @@ enum ValidationAction<Form> {
 
 public struct FormValidation<Form> {
     let field: PartialKeyPath<Form>
-    public let description: String
+    let description: String
     let action: ValidationAction<Form>
 
     public init<Value>(for field: KeyPath<Form, Value>, description: String, validateValue: @escaping (Value) -> Bool) {
