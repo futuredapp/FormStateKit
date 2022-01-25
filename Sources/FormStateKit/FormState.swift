@@ -24,7 +24,12 @@ public struct FormState<Form> {
     @discardableResult
     public mutating func validate() -> Bool {
         let errors = validations
-            .filter { !$0.validate(form) }
+            .filter { validation in
+                if case let .synchronous(validate) = validation.action, !validate(form) {
+                    return true
+                }
+                return false
+            }
             .reduce(into: [:]) { result, validation in
                 result[validation.field, default: []].append(validation.description)
             }
@@ -35,7 +40,12 @@ public struct FormState<Form> {
     @discardableResult
     public mutating func validate<Field>(field: KeyPath<Form, Field>) -> Bool {
         let fieldErrors = validations
-            .filter { $0.field == field && !$0.validate(form) }
+            .filter { validation in
+                if validation.field == field, case let .synchronous(validate) = validation.action, !validate(form) {
+                    return true
+                }
+                return false
+            }
             .map(\.description)
             .reduce(into: []) { $0.append($1) }
         errors[field] = fieldErrors
