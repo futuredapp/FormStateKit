@@ -59,8 +59,12 @@ public struct FormState<Form> {
         }
         
         for validation in validations {
-            if case let .asynchronous(validate) = validation.action, await !validate(form) {
-                errors[validation.field, default: []].append(validation.description)
+            do {
+                if case let .asynchronous(validate) = validation.action, try await !validate(form) {
+                    errors[validation.field, default: []].append(validation.description)
+                }
+            } catch {
+                errors[validation.field, default: []].append(error.localizedDescription)
             }
         }
         return errors.isEmpty
@@ -73,8 +77,12 @@ public struct FormState<Form> {
         }
         
         for validation in validations {
-            if validation.field == field, case let .asynchronous(validate) = validation.action, await !validate(form) {
-                errors[validation.field, default: []].append(validation.description)
+            do {
+                if validation.field == field, case let .asynchronous(validate) = validation.action, try await !validate(form) {
+                    errors[validation.field, default: []].append(validation.description)
+                }
+            } catch {
+                errors[validation.field, default: []].append(error.localizedDescription)
             }
         }
         return errors.isEmpty

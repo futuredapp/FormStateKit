@@ -1,6 +1,6 @@
 enum ValidationAction<Form> {
     case synchronous((Form) -> Bool)
-    case asynchronous((Form) async -> Bool)
+    case asynchronous((Form) async throws -> Bool)
 }
 
 public struct FormValidation<Form> {
@@ -30,19 +30,17 @@ public struct FormValidation<Form> {
         }
     }
     
-    public init<Value>(for field: KeyPath<Form, Value>, description: String, validateValue: @escaping (Value) async -> Bool) {
+    public init<Value>(for field: KeyPath<Form, Value>, description: String, validateValue: @escaping (Value) async throws -> Bool) {
         self.field = field
         self.description = description
         self.action = .asynchronous { form in
-            await validateValue(form[keyPath: field])
+            try await validateValue(form[keyPath: field])
         }
     }
 
-    public init<R>(for field: KeyPath<Form, R>, description: String, validateForm: @escaping (Form) async -> Bool) {
+    public init<R>(for field: KeyPath<Form, R>, description: String, validateForm: @escaping (Form) async throws -> Bool) {
         self.field = field
         self.description = description
         self.action = .asynchronous(validateForm)
     }
-}
-
 }
