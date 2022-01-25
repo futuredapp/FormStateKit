@@ -29,4 +29,20 @@ public struct FormValidation<Form> {
             rule(value: form[keyPath: field])
         }
     }
+    
+    public init<Value>(for field: KeyPath<Form, Value>, description: String, validateValue: @escaping (Value) async -> Bool) {
+        self.field = field
+        self.description = description
+        self.action = .asynchronous { form in
+            await validateValue(form[keyPath: field])
+        }
+    }
+
+    public init<R>(for field: KeyPath<Form, R>, description: String, validateForm: @escaping (Form) async -> Bool) {
+        self.field = field
+        self.description = description
+        self.action = .asynchronous(validateForm)
+    }
+}
+
 }

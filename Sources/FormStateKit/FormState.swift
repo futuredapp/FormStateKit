@@ -51,6 +51,34 @@ public struct FormState<Form> {
         errors[field] = fieldErrors
         return fieldErrors.isEmpty
     }
+    
+    @discardableResult
+    public mutating func validateAsync() async -> Bool {
+        guard validate() else {
+            return false
+        }
+        
+        for validation in validations {
+            if case let .asynchronous(validate) = validation.action, await !validate(form) {
+                errors[validation.field, default: []].append(validation.description)
+            }
+        }
+        return errors.isEmpty
+    }
+    
+    @discardableResult
+    public mutating func validateAsync<Field>(field: KeyPath<Form, Field>) async -> Bool {
+        guard validate(field: field) else {
+            return false
+        }
+        
+        for validation in validations {
+            if validation.field == field, case let .asynchronous(validate) = validation.action, await !validate(form) {
+                errors[validation.field, default: []].append(validation.description)
+            }
+        }
+        return errors.isEmpty
+    }
 
     public func errors<Field>(for field: KeyPath<Form, Field>) -> [String] {
         errors[field, default: []]
