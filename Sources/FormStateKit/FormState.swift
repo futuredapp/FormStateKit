@@ -1,20 +1,12 @@
-public struct FormState<Form> {
+public struct FormState<Form: FormModel> {
     public var form: Form
 
-    private let validations: [FormValidation<Form>]
-    private let fieldOrder: [PartialKeyPath<Form>]
+    private var validations: [FormValidation<Form>] { form.validations }
+    private var fieldOrder: [PartialKeyPath<Form>] { form.fieldOrder }
     private var errors: [PartialKeyPath<Form>: [String]] = [:]
 
-    public init(form: Form, validations: [FormValidation<Form>], fieldOrder: [PartialKeyPath<Form>] = []) {
+    public init(form: Form)  {
         self.form = form
-        self.validations = validations
-        self.fieldOrder = fieldOrder
-    }
-
-    public init(form: Form) where Form: FormModel {
-        self.form = form
-        self.validations = form.validations
-        self.fieldOrder = form.fieldOrder
     }
 
     public var allErrors: [String] {
